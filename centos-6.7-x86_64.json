@@ -1,28 +1,18 @@
 {
-  "variables": {
-    "iso_location": "/Users/edwin/Downloads",
-    "harddisk_size": "80960",
-    "vm_name": "OEL6_6",
-    "compression": "6"
-  },
   "builders": [{
-    "vm_name": "{{user `vm_name`}}",
-    "output_directory": "build/{{user `vm_name`}}",
     "type": "virtualbox-iso",
     "virtualbox_version_file": ".vbox_version",
-    "headless": true,
+    "headless": false,
 
-    "guest_os_type": "Oracle_64",
+    "guest_os_type": "RedHat_64",
+    "disk_size": 80960,
 
-    "hard_drive_interface": "sata",
-    "disk_size": "{{user `harddisk_size`}}",
-
-    "iso_url": "{{user `iso_location`}}/OracleLinux-R6-U6-Server-x86_64-dvd.iso",
-    "iso_checksum": "5738f10a506d3630edfd297ef179b553091c6a48",
+    "iso_url": "http://mirror.nl.leaseweb.net/centos/6.7/isos/x86_64/CentOS-6.7-x86_64-minimal.iso",
+    "iso_checksum": "2ed5ea551dffc3e4b82847b3cee1f6cd748e8071",
     "iso_checksum_type": "sha1",
 
     "boot_command": [
-      "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/OEL6_6-x86_64/ks.cfg<enter><wait>"
+      "<tab> text btrfs ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/centos-6.7-x86_64/ks.cfg<enter><wait>"
     ],
     "boot_wait": "12s",
 
@@ -45,14 +35,15 @@
     "type": "vmware-iso",
     "headless": false,
 
-    "disk_size": "{{user `harddisk_size`}}",
+    "guest_os_type": "centos-64",
+    "disk_size": 80960,
 
-    "iso_url": "{{user `iso_location`}}/OracleLinux-R6-U6-Server-x86_64-dvd.iso",
-    "iso_checksum": "5738f10a506d3630edfd297ef179b553091c6a48",
+    "iso_url": "http://mirror.nl.leaseweb.net/centos/6.7/isos/x86_64/CentOS-6.7-x86_64-minimal.iso",
+    "iso_checksum": "2ed5ea551dffc3e4b82847b3cee1f6cd748e8071",
     "iso_checksum_type": "sha1",
 
     "boot_command": [
-      "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/OEL6_6-x86_64/ks.cfg<enter><wait>"
+      "<tab> text btrfs ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/centos-6.7-x86_64/ks.cfg<enter><wait>"
     ],
     "boot_wait": "12s",
 
@@ -65,11 +56,21 @@
     "ssh_wait_timeout": "10000s",
 
     "vmx_data": {
-        "memsize": "1024",
+        "memsize": "512",
         "numvcpus": "1",
         "vhv.enable": "TRUE"
     },
     "shutdown_command": "echo 'vagrant'|sudo -S /sbin/halt -h -p"
+  }],
+  "post-processors": [{
+    "output": "build/centos-6.7-x86_64.box",
+    "type": "vagrant",
+    "only": ["virtualbox-iso"]
+  },
+  {
+    "output": "build/centos-6.7-x86_64-{{.Provider}}.box",
+    "type": "vagrant",
+    "only": ["vmware-iso"]
   }],
   "provisioners": [{
     "type": "shell",
@@ -92,15 +93,5 @@
          ]
        }
     }
-  }],
-  "post-processors": [{
-    "output": "build/{{user `vm_name`}}-x86_64.box",
-    "type": "vagrant",
-    "only": ["virtualbox-iso"]
-  },
-  {
-    "output": "build/{{user `vm_name`}}-x86_64-{{.Provider}}.box",
-    "type": "vagrant",
-    "only": ["vmware-iso"]
   }]
 }
