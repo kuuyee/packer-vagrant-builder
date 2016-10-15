@@ -16,6 +16,8 @@
 * Oracle Linux 7.1 64-bit
 * Oracle Linux 7.2 64-bit with BTRFS
 
+kuuyee
+
 ## software
 Download [Packer](http://packer.io) at http://packer.io, tested it with Packer 0.8.6
 
